@@ -103,14 +103,22 @@ class WeatherVC: UIViewController {
             
         }
         self.weatherViewModel.showAlertClosure = {
-            self.activityInd.stopAnimating()
+            
             if self.weatherViewModel.error != nil  {
                 do {
-                    print(self.weatherViewModel.error?.localizedDescription ?? "")
+                    DispatchQueue.main.async {
+                        self.activityInd.stopAnimating()
+                        let alert = UIAlertController.init(title: "Data Not Found", message: "Weather Data for the entered location is not found or you have entered wrong input, Please try again", preferredStyle: .alert)
+                        let actionButton = UIAlertAction.init(title: "OK", style: .default) { (action) in
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        alert.addAction(actionButton)
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
                     self.dispatchGroup.leave()
                 }
             }
-        }
     }
     
     func addSunriseAndSunsetView(sunriseTime : String, sunsetTime : String, angle : Double) {
